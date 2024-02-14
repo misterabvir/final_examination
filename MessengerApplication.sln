@@ -3,12 +3,46 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messenger.Shared", "Messenger.Shared\Messenger.Shared.csproj", "{6060381D-730B-4DB5-A249-8235C2E77F80}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messenger.MessageManager", "Messenger.MessageManager\Messenger.MessageManager.csproj", "{7346D3E0-6A9C-4C4C-83AD-48CFFD18A4FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messenger.UserManager", "Messenger.UserManager\Messenger.UserManager.csproj", "{E77CC23B-21FA-4B6A-AF18-440BA7039C50}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messenger.OcelotManager", "Messenger.OcelotManager\Messenger.OcelotManager.csproj", "{EE96C303-692C-4AE7-866B-84B14C83B207}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B66BA266-EF26-4441-9837-F56A7252E3A4}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6060381D-730B-4DB5-A249-8235C2E77F80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6060381D-730B-4DB5-A249-8235C2E77F80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6060381D-730B-4DB5-A249-8235C2E77F80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6060381D-730B-4DB5-A249-8235C2E77F80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7346D3E0-6A9C-4C4C-83AD-48CFFD18A4FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7346D3E0-6A9C-4C4C-83AD-48CFFD18A4FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7346D3E0-6A9C-4C4C-83AD-48CFFD18A4FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7346D3E0-6A9C-4C4C-83AD-48CFFD18A4FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E77CC23B-21FA-4B6A-AF18-440BA7039C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E77CC23B-21FA-4B6A-AF18-440BA7039C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E77CC23B-21FA-4B6A-AF18-440BA7039C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E77CC23B-21FA-4B6A-AF18-440BA7039C50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE96C303-692C-4AE7-866B-84B14C83B207}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE96C303-692C-4AE7-866B-84B14C83B207}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE96C303-692C-4AE7-866B-84B14C83B207}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE96C303-692C-4AE7-866B-84B14C83B207}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {537C9D03-C150-4B10-AE51-F564C70704FB}
 	EndGlobalSection
 EndGlobal
