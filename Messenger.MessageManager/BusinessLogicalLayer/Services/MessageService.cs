@@ -61,7 +61,7 @@ public class MessageService : IMessageService
     {
         // Check if the user exists
         var existRequest = await Post<UserIsExistRequest?, UserExistingResponse>(
-            url: "http://user_manager:8080/users/is-user-exist",
+            url: "http://ocelot_manager:8080/users/is-user-exist",
             request: new UserIsExistRequest(user.Id));
         if (existRequest is null)
         {

@@ -1,0 +1,66 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/users/{method}",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "users",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user_manager",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/users/{method}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ]
+    },
+    {
+      "DownstreamPathTemplate": "/messages/{method}",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "messages",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "message_manager",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/messages/{method}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST"
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://ocelot_manager:8080"
+  },
+
+  "SwaggerEndPoints": [
+    {
+      "Key": "users",
+      "TransformByOcelotConfig": false,
+      "Config": [
+        {
+          "Name": "Users API",
+          "Version": "v1",
+          "Url": "http://user_manager:8080/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "messages",
+      "TransformByOcelotConfig": false,
+      "Config": [
+        {
+          "Name": "Messages API",
+          "Version": "v1",
+          "Url": "http://message_manager:8080/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

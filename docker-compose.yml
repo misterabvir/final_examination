@@ -17,6 +17,14 @@ services:
     networks:
       - messenger_net
 
+  ocelot_manager:
+    image: ${DOCKER_REGISTRY-}ocelot_manager
+    build:
+      context: .
+      dockerfile: Messenger.OcelotManager/Dockerfile
+    networks:
+      - messenger_net
+
 networks:
   messenger_net:
     external:

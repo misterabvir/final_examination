@@ -44,6 +44,26 @@ public class UsersController : BaseController
         return ProblemActionResult(response.Error!);
     }
 
+    /// <summary>
+    /// Get the current user's ID
+    /// </summary>
+    [Authorize(Roles = "Administrator, User")]
+    [HttpGet(template: "get-current-user-id")]
+    public IActionResult GetCurrentUserId()
+    {
+        // Get the current user
+        var user = GetCurrentUser();
+
+        // If user is not found, return a problem
+        if (user == null)
+        {
+            return ProblemActionResult(new UserClaimsNotFound());
+        }
+
+        // Return the current user's ID
+        return Ok(new { UserId = user.Id });
+    }
+
     [AllowAnonymous]
     [HttpPost(template: "is-user-exist")]
     public async Task<IActionResult> IsUserExist(UserIsExistRequest request, CancellationToken cancellationToken)
@@ -82,25 +102,7 @@ public class UsersController : BaseController
         return ProblemActionResult(response.Error!);
     }
 
-    /// <summary>
-    /// Get the current user's ID
-    /// </summary>
-    [Authorize(Roles = "Administrator, User")]
-    [HttpGet(template: "get-current-user-id")]
-    public IActionResult GetCurrentUserId()
-    {
-        // Get the current user
-        var user = GetCurrentUser();
 
-        // If user is not found, return a problem
-        if (user == null)
-        {
-            return ProblemActionResult(new UserClaimsNotFound());
-        }
-
-        // Return the current user's ID
-        return Ok(new { UserId = user.Id });
-    }
 
     /// <summary>
     /// Endpoint for user login
@@ -129,7 +131,7 @@ public class UsersController : BaseController
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An IActionResult representing the result of the delete operation.</returns>
     [Authorize(Roles = "Administrator")]
-    [HttpPost(template: "delete")]
+    [HttpDelete(template: "delete")]
     public async Task<IActionResult> Delete([FromBody] UserDeleteRequest request, CancellationToken cancellationToken)
     {
         // Get the current user

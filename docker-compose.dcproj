@@ -7,7 +7,7 @@
     <ProjectGuid>67844fc1-3c3e-49e9-ac8f-153455223b22</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>messenger.usermanager</DockerServiceName>
+    <DockerServiceName>ocelot_manager</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
