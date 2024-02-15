@@ -7,30 +7,29 @@ namespace Messenger.UserManager;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddUserManager(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddControllers();
-        services.AddEndpointsApiExplorer();
-
-        services.AddSharedDependencies(configuration);
-        services.AddDataAccessLayer(configuration);
-        services.AddBusinessLogicalLayer();
-
-        return services;
-    } 
-}
-
-public static class MiddlewareInjection
+/// <summary>
+/// Adds user manager to the service collection
+/// </summary>
+/// <param name="services">The current service collection</param>
+/// <param name="configuration">The configuration</param>
+/// <returns>The updated service collection</returns>
+public static IServiceCollection AddUserManager(this IServiceCollection services, IConfiguration configuration)
 {
-    public static WebApplication UseUserManager(this WebApplication app)
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
+    // Add controllers
+    services.AddControllers();
 
-        app.UseAuthentication();
-        app.UseAuthorization();
+    // Add endpoint API explorer
+    services.AddEndpointsApiExplorer();
 
-        app.MapControllers();
-        return app;
-    }
+    // Add shared dependencies
+    services.AddSharedDependencies(configuration);
+
+    // Add data access layer
+    services.AddDataAccessLayer(configuration);
+
+    // Add business logical layer
+    services.AddBusinessLogicalLayer();
+
+    return services;
+}
 }

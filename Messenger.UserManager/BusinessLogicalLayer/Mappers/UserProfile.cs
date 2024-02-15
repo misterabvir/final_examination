@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Messenger.Shared.Contracts.Users.Responses;
-using Messenger.UserManager.Domain;
+using Messenger.UserManager.Models;
 
 namespace Messenger.UserManager.BusinessLogicalLayer.Mappers;
 

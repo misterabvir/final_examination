@@ -1,4 +1,4 @@
-﻿using Messenger.UserManager.Domain;
+﻿using Messenger.UserManager.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,7 +19,7 @@ public class RoleEntityTypeConfiguration : IEntityTypeConfiguration<Role>
         builder.ToTable("roles");
 
         // Set the primary key and its name
-        builder.HasKey(x => x.Id).HasName("roles_pkey");
+        builder.HasKey(x => x.Id).HasName("roles_pk");
 
         // Set the column name for the Id property
         builder.Property(x => x.Id).HasColumnName("role_id");

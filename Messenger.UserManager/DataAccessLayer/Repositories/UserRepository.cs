@@ -1,6 +1,6 @@
 ﻿using Messenger.UserManager.DataAccessLayer.Contexts;
 using Messenger.UserManager.DataAccessLayer.Repositories.Base;
-using Messenger.UserManager.Domain;
+using Messenger.UserManager.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Messenger.UserManager.DataAccessLayer.Repositories;

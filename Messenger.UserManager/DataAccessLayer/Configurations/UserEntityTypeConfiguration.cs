@@ -1,4 +1,4 @@
-﻿using Messenger.UserManager.Domain;
+﻿using Messenger.UserManager.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,7 +19,7 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
         builder.ToTable("users");
 
         // Configure the primary key and its name
-        builder.HasKey(x => x.Id).HasName("users_pkey");
+        builder.HasKey(x => x.Id).HasName("users_pk");
 
         // Configure the column name for the Id property
         builder.Property(x => x.Id).HasColumnName("user_id");

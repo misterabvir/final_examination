@@ -2,7 +2,7 @@
 using Messenger.Shared.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Messenger.UserManager.Domain;
+namespace Messenger.UserManager.Models;
 
 /// <summary> Entity for user RoleType </summary>
 [Table("roles")]

@@ -1,16 +1,25 @@
 ﻿using Messenger.Shared.Abstractions.Results;
-using Messenger.UserManager.Models;
+using Messenger.Shared.Contracts.Users.Responses;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace Messenger.UserManager.Controllers;
+namespace Messenger.Shared.Abstractions.Controllers;
 
 [ApiController]
 public class BaseController : ControllerBase
 {
-    protected UserIdentityModel? GetCurrentUser()
+    protected readonly ILogger _logger;
+
+    protected BaseController(ILogger logger)
+    {
+        _logger = logger;
+    }
+
+    protected UserIdentity? GetCurrentUser()
     {
         var identity = HttpContext.User.Identity as ClaimsIdentity;
+        _logger.LogInformation("User identity: {identity}", identity);
         if (identity is null)
         {
             return null;
@@ -23,7 +32,7 @@ public class BaseController : ControllerBase
         if (id == null || email == null || role == null)
             return null;
 
-        return new UserIdentityModel(Guid.Parse(id), email, role);
+        return new UserIdentity(Guid.Parse(id), email, role);
     }
 
     /// <summary>

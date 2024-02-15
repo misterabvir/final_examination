@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Messenger.UserManager.DataAccessLayer.Migrations
+namespace Messenger.UserManager.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -20,7 +20,7 @@ namespace Messenger.UserManager.DataAccessLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("roles_pkey", x => x.role_id);
+                    table.PrimaryKey("roles_pk", x => x.role_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -35,7 +35,7 @@ namespace Messenger.UserManager.DataAccessLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("users_pkey", x => x.user_id);
+                    table.PrimaryKey("users_pk", x => x.user_id);
                     table.ForeignKey(
                         name: "users_role_id_fkey",
                         column: x => x.role_id,

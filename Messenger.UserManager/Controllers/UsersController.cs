@@ -1,4 +1,5 @@
-﻿using Messenger.Shared.Contracts.Users.Requests;
+﻿using Messenger.Shared.Abstractions.Controllers;
+using Messenger.Shared.Contracts.Users.Requests;
 using Messenger.UserManager.BusinessLogicalLayer.Services.Base;
 using Messenger.UserManager.Errors;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +16,7 @@ public class UsersController : BaseController
     /// Constructor for UsersController class, takes an instance of IUserService as a parameter.
     /// </summary>
     /// <param name="userService"></param>
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, ILogger<UsersController> logger) : base(logger)
     {
         _userService = userService;
     }
@@ -34,6 +35,21 @@ public class UsersController : BaseController
     {
         // Call the UserService to get all users
         var response = await _userService.GetAll(cancellationToken);
+        if (response.IsSuccess)
+        {
+            return Ok(response.Value);
+        }
+
+        // Return problem action result if there was an error
+        return ProblemActionResult(response.Error!);
+    }
+
+    [AllowAnonymous]
+    [HttpPost(template: "is-user-exist")]
+    public async Task<IActionResult> IsUserExist(UserIsExistRequest request, CancellationToken cancellationToken)
+    {
+        // Call the UserService to flag exists for user bt id;
+        var response = await _userService.GetIsExist(request, cancellationToken);
         if (response.IsSuccess)
         {
             return Ok(response.Value);

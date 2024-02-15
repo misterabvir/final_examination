@@ -1,5 +1,5 @@
 ﻿using Messenger.Shared.Abstractions.Repositories;
-using Messenger.UserManager.Domain;
+using Messenger.UserManager.Models;
 
 namespace Messenger.UserManager.DataAccessLayer.Repositories.Base;
 

@@ -1,4 +1,4 @@
-﻿using Messenger.UserManager.Domain;
+﻿using Messenger.UserManager.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Messenger.UserManager.DataAccessLayer.Contexts;

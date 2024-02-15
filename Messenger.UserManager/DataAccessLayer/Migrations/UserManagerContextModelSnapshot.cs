@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Messenger.UserManager.DataAccessLayer.Migrations
+namespace Messenger.UserManager.Migrations
 {
     [DbContext(typeof(UserManagerContext))]
     partial class UserManagerContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,7 @@ namespace Messenger.UserManager.DataAccessLayer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Messenger.UserManager.Domain.Role", b =>
+            modelBuilder.Entity("Messenger.UserManager.Models.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,12 +34,12 @@ namespace Messenger.UserManager.DataAccessLayer.Migrations
                         .HasColumnName("role");
 
                     b.HasKey("Id")
-                        .HasName("roles_pkey");
+                        .HasName("roles_pk");
 
                     b.ToTable("roles", (string)null);
                 });
 
-            modelBuilder.Entity("Messenger.UserManager.Domain.User", b =>
+            modelBuilder.Entity("Messenger.UserManager.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -67,16 +67,16 @@ namespace Messenger.UserManager.DataAccessLayer.Migrations
                         .HasColumnName("salt");
 
                     b.HasKey("Id")
-                        .HasName("users_pkey");
+                        .HasName("users_pk");
 
                     b.HasIndex("RoleId");
 
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("Messenger.UserManager.Domain.User", b =>
+            modelBuilder.Entity("Messenger.UserManager.Models.User", b =>
                 {
-                    b.HasOne("Messenger.UserManager.Domain.Role", "Role")
+                    b.HasOne("Messenger.UserManager.Models.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)

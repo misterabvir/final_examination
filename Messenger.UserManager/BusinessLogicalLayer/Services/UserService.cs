@@ -7,7 +7,7 @@ using Messenger.Shared.Security.Base;
 using Messenger.UserManager.BusinessLogicalLayer.Errors;
 using Messenger.UserManager.BusinessLogicalLayer.Services.Base;
 using Messenger.UserManager.DataAccessLayer.Repositories.Base;
-using Messenger.UserManager.Domain;
+using Messenger.UserManager.Models;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Messenger.UserManager.BusinessLogicalLayer.Services;
@@ -76,7 +76,7 @@ public class UserService : IUserService
     /// <param name="request">The user authentication request</param>
     /// <param name="cancellationToken">The cancellation token</param>
     /// <returns>A result containing either a token or an error</returns>
-    public async Task<Result<object, Error>> Login(UserAuthRequest request, CancellationToken cancellationToken)
+    public async Task<Result<UserTokenResponse, Error>> Login(UserAuthRequest request, CancellationToken cancellationToken)
     {
         // Retrieve user by email
         var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
@@ -104,7 +104,7 @@ public class UserService : IUserService
         // Generate token and log user login
         _logger.LogInformation("Login user");
         var token = _tokenService.GenerateToken(user.Id, user.Email, user.Role!.ToString());
-        return Result<object, Error>.Success(new { Token = token });
+        return new UserTokenResponse(token);
     }
 
     /// <summary>
@@ -113,7 +113,7 @@ public class UserService : IUserService
     /// <param name="request">The user authentication request</param>
     /// <param name="cancellationToken">The cancellation token</param>
     /// <returns>The result of the registration process</returns>
-    public async Task<Result<object, Error>> Register(UserAuthRequest request, CancellationToken cancellationToken)
+    public async Task<Result<UserTokenResponse, Error>> Register(UserAuthRequest request, CancellationToken cancellationToken)
     {
         // Check if the user already exists
         var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
@@ -147,7 +147,7 @@ public class UserService : IUserService
 
         // Generate and return a token for the registered user
         var token = _tokenService.GenerateToken(user.Id, user.Email, user.Role!.ToString());
-        return Result<object, Error>.Success(new { Token = token });
+        return new UserTokenResponse(token);
     }
 
     /// <summary>
@@ -156,7 +156,7 @@ public class UserService : IUserService
     /// <param name="request">The request containing the user ID to delete</param>
     /// <param name="cancellationToken">The cancellation token</param>
     /// <returns>A task representing the operation result</returns>
-    public async Task<Result<object, Error>> Delete(UserDeleteRequest request, CancellationToken cancellationToken)
+    public async Task<Result<UserDeleteResponse, Error>> Delete(UserDeleteRequest request, CancellationToken cancellationToken)
     {
         // Get the user by ID
         var user = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
@@ -173,6 +173,12 @@ public class UserService : IUserService
         _logger.LogInformation("Delete user");
 
         // Return success result
-        return Result<object, Error>.Success(new { Success = true });
+        return new UserDeleteResponse(true);
+    }
+
+    public async Task<Result<UserExistingResponse, Error>> GetIsExist(UserIsExistRequest request, CancellationToken cancellationToken)
+    {
+        var user = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
+        return new UserExistingResponse { IsExist = user is not null };
     }
 }
