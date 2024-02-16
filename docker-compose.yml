@@ -1,24 +1,30 @@
 version: '3.4'
 
 services:
-  user_manager:
-    image: ${DOCKER_REGISTRY-}user_manager
+  messenger_user_manager:
+    container_name: user_manager
+    image: ${DOCKER_REGISTRY-}messengerusermanager
     build:
       context: .
       dockerfile: Messenger.UserManager/Dockerfile
     networks:
       - messenger_net
 
-  message_manager:
-    image: ${DOCKER_REGISTRY-}message_manager
+  messenger_message_manager:
+    container_name: message_manager
+    image: ${DOCKER_REGISTRY-}messengermessagemanager
     build:
       context: .
       dockerfile: Messenger.MessageManager/Dockerfile
     networks:
       - messenger_net
 
-  ocelot_manager:
-    image: ${DOCKER_REGISTRY-}ocelot_manager
+  messenger_ocelot_manager:
+    container_name: ocelot_manager
+    image: ${DOCKER_REGISTRY-}messengerocelotmanager
+    ports:
+      - 20000:8080 
+      - 20001:8081 
     build:
       context: .
       dockerfile: Messenger.OcelotManager/Dockerfile

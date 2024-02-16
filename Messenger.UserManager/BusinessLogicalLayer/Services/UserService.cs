@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Messenger.Shared.Abstractions.Results;
+﻿using Messenger.Shared.Abstractions.Results;
 using Messenger.Shared.Contracts.Users.Requests;
 using Messenger.Shared.Contracts.Users.Responses;
 using Messenger.Shared.Enums;
@@ -21,8 +20,7 @@ public class UserService : IUserService
     private readonly IRoleRepository _roleRepository;
     private readonly IEncryptService _encryptService;
     private readonly ITokenService _tokenService;
-    private readonly IMapper _mapper;
-    private readonly ILogger<UserService> _logger;
+    private readonly IMapperService _mapper;
 
     /// <summary>
     /// Initializes a new instance of the UserService class with the required dependencies.
@@ -32,21 +30,18 @@ public class UserService : IUserService
     /// <param name="encryptService">The encrypt service</param>
     /// <param name="tokenService">The token service</param>
     /// <param name="mapper">The mapper</param>
-    /// <param name="logger">The logger</param>
     public UserService(
         IUserRepository userRepository,
         IRoleRepository roleRepository,
         IEncryptService encryptService,
         ITokenService tokenService,
-        IMapper mapper,
-        ILogger<UserService> logger)
+        IMapperService mapper)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
         _encryptService = encryptService;
         _tokenService = tokenService;
         _mapper = mapper;
-        _logger = logger;
     }
 
 
@@ -61,10 +56,7 @@ public class UserService : IUserService
         var users = await _userRepository.GetAllAsync(cancellationToken);
 
         // Map the users to user responses and convert to list
-        var response = users.Select(_mapper.Map<UserResponse>).ToList()!;
-
-        // Log the action
-        _logger.LogInformation("Retrieved all users");
+        var response = users.Select(_mapper.Map<User, UserResponse>).ToList()!;
 
         // Return the user responses
         return response;
@@ -84,7 +76,6 @@ public class UserService : IUserService
         // If user not found, return error
         if (user is null)
         {
-            _logger.LogInformation("Login user failed: user email not found");
             return new UserNotFound(request.Email);
         }
 
@@ -92,7 +83,6 @@ public class UserService : IUserService
         var password = _encryptService.HashPassword(request.Password, user.Salt);
         if (!password.SequenceEqual(user.Password))
         {
-            _logger.LogInformation("Login user failed: invalid password");
             return new InvalidPassword();
         }
 
@@ -101,8 +91,7 @@ public class UserService : IUserService
         user.Password = _encryptService.HashPassword(request.Password, user.Salt);
         await _userRepository.UpdateAsync(user, cancellationToken);
 
-        // Generate token and log user login
-        _logger.LogInformation("Login user");
+        // Generate token
         var token = _tokenService.GenerateToken(user.Id, user.Email, user.Role!.ToString());
         return new UserTokenResponse(token);
     }
@@ -119,7 +108,6 @@ public class UserService : IUserService
         var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
         if (user is not null)
         {
-            _logger.LogInformation("Register user failed: user email already exists");
             return new UserAlreadyExists(request.Email);
         }
 
@@ -142,8 +130,6 @@ public class UserService : IUserService
         };
 
         await _userRepository.CreateAsync(user, cancellationToken);
-
-        _logger.LogInformation("Register user");
 
         // Generate and return a token for the registered user
         var token = _tokenService.GenerateToken(user.Id, user.Email, user.Role!.ToString());
@@ -169,16 +155,20 @@ public class UserService : IUserService
         // Delete the user
         await _userRepository.DeleteAsync(user!, cancellationToken);
 
-        // Log the user deletion
-        _logger.LogInformation("Delete user");
-
         // Return success result
         return new UserDeleteResponse(true);
     }
 
+    /// <summary>
+    /// Checks if a user with the given ID exists.
+    /// </summary>
+    /// <param name="request"> The request containing the user ID to check for existence. </param>
+    /// <param name="cancellationToken">The cancellation token</param>
+    /// <returns>A result containing the user existence status or an error</returns>
     public async Task<Result<UserExistingResponse, Error>> GetIsExist(UserIsExistRequest request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
-        return new UserExistingResponse { IsExist = user is not null };
+        // Get the user by ID
+        var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
+        return new UserExistingResponse { UserId = user?.Id ?? Guid.Empty, IsExisting = user is not null };
     }
 }

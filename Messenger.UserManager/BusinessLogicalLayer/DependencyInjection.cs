@@ -8,6 +8,7 @@ public static class DependencyInjection
     public static IServiceCollection AddBusinessLogicalLayer(this IServiceCollection services)
     {
         services.AddAutoMapper(config => config.AddMaps(typeof(DependencyInjection).Assembly));
+        services.AddTransient<IMapperService, MapperService>();
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<IEncryptService, EncryptService>();
 

@@ -1,5 +1,4 @@
 ﻿using Messenger.Shared.Abstractions.Results;
-
 namespace Messenger.UserManager.Errors;
 
 public class UserClaimsNotFound : Error

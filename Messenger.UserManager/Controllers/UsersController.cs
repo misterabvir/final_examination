@@ -89,6 +89,7 @@ public class UsersController : BaseController
     [HttpPost(template: "register")]
     public async Task<IActionResult> Register([FromBody] UserAuthRequest request, CancellationToken cancellationToken)
     {
+
         // Call the UserService to register the user
         var response = await _userService.Register(request, cancellationToken);
 

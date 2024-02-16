@@ -5,8 +5,10 @@ IConfiguration configuration = new ConfigurationBuilder()
         .AddJsonFile("ocelot.json")
         .Build();
 
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

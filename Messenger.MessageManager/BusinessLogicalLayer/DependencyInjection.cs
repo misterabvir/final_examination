@@ -12,13 +12,12 @@ public static class DependencyInjection
     /// <returns>The same collection of services so that multiple calls can be chained.</returns>
     public static IServiceCollection AddBusinessLogicalLayer(this IServiceCollection services)
     {
-        // Add AutoMapper with the assemblies from DependencyInjection
         services.AddAutoMapper(config => config.AddMaps(typeof(DependencyInjection).Assembly));
 
-        // Add HttpClient as a singleton
         services.AddSingleton<HttpClient>();
 
-        // Add IMessageService as a transient service
+        services.AddTransient<IHttpClientService, HttpClientService>();
+        services.AddTransient<IMapperService, MapperService>();
         services.AddTransient<IMessageService, MessageService>();
 
         return services;

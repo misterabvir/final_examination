@@ -1,7 +1,10 @@
-﻿namespace Messenger.Shared.Contracts.Messages.Requests;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Messenger.Shared.Contracts.Messages.Requests;
 
 public class MessageCreateRequest
 {
-    public Guid RecipientId { get; set; }
+    [EmailAddress]
+    public  required string RecipientEmail { get; set; }
     public string Text { get; set; } = null!;
 }

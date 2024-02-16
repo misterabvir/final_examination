@@ -14,7 +14,6 @@ public static class MiddlewareInjection
 
         app.UseAuthentication();
         app.UseAuthorization();
-
         app.MapControllers();
         return app;
     }

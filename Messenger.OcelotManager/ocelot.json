@@ -36,7 +36,7 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://ocelot_manager:8080"
+    "BaseUrl": "https://ocelot_manager:8081"
   },
 
   "SwaggerEndPoints": [
