@@ -1,4 +1,5 @@
 using FluentAssertions;
+using MassTransit;
 using Messenger.Shared.Contracts.Users.Requests;
 using Messenger.Shared.Contracts.Users.Responses;
 using Messenger.Shared.Enums;
@@ -22,6 +23,7 @@ public class UserServicesTests
     private readonly ITokenService _tokenService;
     private readonly IMapperService _mapper;
     private readonly IUserService _userService;
+    private readonly IBus _bus;
 
     public UserServicesTests()
     {
@@ -30,7 +32,8 @@ public class UserServicesTests
         _encryptService = Substitute.For<IEncryptService>();
         _tokenService = Substitute.For<ITokenService>();
         _mapper = Substitute.For<IMapperService>();
-        _userService = new UserService(_userRepository, _roleRepository, _encryptService, _tokenService, _mapper);
+       _bus = Substitute.For<IBus>();
+        _userService = new UserService(_userRepository, _roleRepository, _encryptService, _tokenService, _mapper, _bus);
     }
 
 

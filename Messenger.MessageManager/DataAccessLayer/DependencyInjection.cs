@@ -22,8 +22,9 @@ public static class DependencyInjection
         services.AddDbContext<MessageManagerContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("MessageManagerConnection")));
 
-        // Register MEssageRepository with transient lifetime
+        // Register Repositories with transient lifetime
         services.AddTransient<IMessageRepository, MessageRepository>();
+        services.AddTransient<IUserRepository, UserRepository>();
 
         return services;
     }

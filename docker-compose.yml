@@ -22,14 +22,49 @@ services:
   messenger_ocelot_manager:
     container_name: ocelot_manager
     image: ${DOCKER_REGISTRY-}messengerocelotmanager
-    ports:
-      - 20000:8080 
-      - 20001:8081 
     build:
       context: .
       dockerfile: Messenger.OcelotManager/Dockerfile
     networks:
       - messenger_net
+  
+  db: 
+    image: postgres
+    container_name: postgresql
+    hostname: postgresql
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ./containers/postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+    networks:
+      - messenger_net 
+
+  broker: 
+    image: rabbitmq:management
+    container_name: rabbit
+    hostname: rabbit
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    expose:
+     - 15672
+     - 5672
+    environment:
+      RABBITMQ_DEFAULT_USER : user 
+      RABBITMQ_DEFAULT_PASS : password 
+    networks:
+      - messenger_net 
+ 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8083:8080
+    networks:
+      - messenger_net 
 
 networks:
   messenger_net:

@@ -2,6 +2,6 @@
 
 public class MessageResponse
 {
-    public Guid SenderId { get; set; }
+    public required string Sender{ get; set; }
     public string Text { get; set; } = null!;
 }

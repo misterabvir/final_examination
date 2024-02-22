@@ -22,6 +22,24 @@ namespace Messenger.MessageManager.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Messenger.MessageManager.DataAccessLayer.Models.AvailableUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("email");
+
+                    b.HasKey("Id")
+                        .HasName("users_pk");
+
+                    b.ToTable("users", (string)null);
+                });
+
             modelBuilder.Entity("Messenger.MessageManager.DataAccessLayer.Models.Message", b =>
                 {
                     b.Property<Guid>("Id")

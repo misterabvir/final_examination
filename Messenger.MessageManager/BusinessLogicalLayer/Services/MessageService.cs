@@ -5,7 +5,6 @@ using Messenger.MessageManager.DataAccessLayer.Repositories.Base;
 using Messenger.Shared.Abstractions.Results;
 using Messenger.Shared.Contracts.Messages.Requests;
 using Messenger.Shared.Contracts.Messages.Responses;
-using Messenger.Shared.Contracts.Users.Requests;
 using Messenger.Shared.Contracts.Users.Responses;
 
 namespace Messenger.MessageManager.BusinessLogicalLayer.Services;
@@ -15,6 +14,7 @@ public class MessageService : IMessageService
     private readonly IHttpClientService _httpClientService;
     private readonly IMapperService _mapper;
     private readonly IMessageRepository _messageRepository;
+    private readonly IUserRepository _userRepository;
 
     /// <summary>
     /// Constructor for MessageService class
@@ -22,11 +22,12 @@ public class MessageService : IMessageService
     /// <param name="messageRepository">The message repository</param>
     /// <param name="httpClientService">The HTTP httpClientService</param>
     /// <param name="mapper">The mapper</param>
-    public MessageService(IMessageRepository messageRepository, IHttpClientService httpClientService, IMapperService mapper)
+    public MessageService(IMessageRepository messageRepository, IHttpClientService httpClientService, IMapperService mapper, IUserRepository userRepository)
     {
         _httpClientService = httpClientService;
         _messageRepository = messageRepository;
         _mapper = mapper;
+        _userRepository = userRepository;
     }
 
     /// <summary>
@@ -38,7 +39,11 @@ public class MessageService : IMessageService
     public async Task<Result<IEnumerable<MessageResponse>, Error>> GetMessages(UserIdentity user, CancellationToken cancellation)
     {
         var messages = await _messageRepository.GetAndMarkAsReadByRecipient(user.Id, cancellation);
-        var response = messages.Select(_mapper.Map<Message, MessageResponse>)!.ToList();
+        var response = messages.Select(m => new MessageResponse()
+        {
+            Sender = _userRepository.GetById(m.SenderId, default).Result!.Email,
+            Text = m.Text
+        }).ToList();
         return response;
     }
 
@@ -52,14 +57,8 @@ public class MessageService : IMessageService
     public async Task<Result<MessageCreateResponse, Error>> CreateMessage(MessageCreateRequest request, UserIdentity user, CancellationToken cancellation)
     {
         // Check if the user exists
-        var existRequest = await _httpClientService.Post<UserIsExistRequest?, UserExistingResponse>(
-            url: "http://ocelot_manager:8080/users/is-user-exist",
-            request: new UserIsExistRequest(request.RecipientEmail));
-        if (existRequest is null)
-        {
-            return new RequestToUserManagerFailed();
-        }
-        if (!existRequest.IsExisting)
+        var recipient = await _userRepository.GetByEmail(request.RecipientEmail, cancellation);
+        if (recipient == null)
         {
             return new RecipientUserNotExists();
         }
@@ -67,7 +66,7 @@ public class MessageService : IMessageService
         // Create the message
         var message = new Message
         {
-            RecipientId = existRequest.UserId,
+            RecipientId = recipient.Id,
             SenderId = user.Id,
             Text = request.Text
         };

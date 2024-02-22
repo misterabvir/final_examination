@@ -1,4 +1,6 @@
-﻿using Messenger.Shared.Abstractions.Results;
+﻿using MassTransit;
+using Messenger.Shared.Abstractions.Results;
+using Messenger.Shared.Contracts.Events;
 using Messenger.Shared.Contracts.Users.Requests;
 using Messenger.Shared.Contracts.Users.Responses;
 using Messenger.Shared.Enums;
@@ -21,6 +23,7 @@ public class UserService : IUserService
     private readonly IEncryptService _encryptService;
     private readonly ITokenService _tokenService;
     private readonly IMapperService _mapper;
+    private readonly IPublishEndpoint _publishEndpoint;
 
     /// <summary>
     /// Initializes a new instance of the UserService class with the required dependencies.
@@ -35,13 +38,15 @@ public class UserService : IUserService
         IRoleRepository roleRepository,
         IEncryptService encryptService,
         ITokenService tokenService,
-        IMapperService mapper)
+        IMapperService mapper,
+        IPublishEndpoint publishEndpoint)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
         _encryptService = encryptService;
         _tokenService = tokenService;
         _mapper = mapper;
+        _publishEndpoint = publishEndpoint;
     }
 
 
@@ -131,6 +136,8 @@ public class UserService : IUserService
 
         await _userRepository.CreateAsync(user, cancellationToken);
 
+        await _publishEndpoint.Publish(new UserRegisteredEvent() { Id = user.Id, Email = user.Email }, cancellationToken);
+
         // Generate and return a token for the registered user
         var token = _tokenService.GenerateToken(user.Id, user.Email, user.Role!.ToString());
         return new UserTokenResponse(token);
@@ -154,6 +161,8 @@ public class UserService : IUserService
 
         // Delete the user
         await _userRepository.DeleteAsync(user!, cancellationToken);
+
+        await _publishEndpoint.Publish(new UserDeletedEvent() { Id = user.Id });
 
         // Return success result
         return new UserDeleteResponse(true);

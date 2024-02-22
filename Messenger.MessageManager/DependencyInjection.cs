@@ -1,6 +1,7 @@
 ﻿using Messenger.Shared;
 using Messenger.MessageManager.BusinessLogicalLayer;
 using Messenger.MessageManager.DataAccessLayer;
+using MassTransit;
 
 
 namespace Messenger.MessageManager;
@@ -29,6 +30,20 @@ public static class DependencyInjection
 
         // Add business logical layer
         services.AddBusinessLogicalLayer();
+
+        services.AddMassTransit(busConfigurator =>
+        {
+            busConfigurator.SetKebabCaseEndpointNameFormatter();
+            busConfigurator.UsingRabbitMq((context, configurator) =>
+            {
+                configurator.Host(new Uri(configuration["MessageBroker:Host"]!), host => {
+                    host.Username(configuration["MessageBroker:Username"]!);
+                    host.Password(configuration["MessageBroker:Password"]!);
+                });
+                configurator.ConfigureEndpoints(context);
+            });
+            busConfigurator.AddConsumers(typeof(DependencyInjection).Assembly);
+        });
 
         return services;
     }
