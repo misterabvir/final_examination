@@ -33,13 +33,6 @@ public interface IUserService
     Task<Result<IEnumerable<UserResponse>, Error>> GetAll(CancellationToken cancellationToken);
 
     /// <summary>
-    /// Retrieves existing user.
-    /// </summary>
-    /// <param name="cancellationToken">A token to cancel the asynchronous operation if needed.</param>
-    /// <returns>A result containing either a existing user flag responses on success or an error on failure.</returns>
-    Task<Result<UserExistingResponse, Error>> GetIsExist(UserIsExistRequest request, CancellationToken cancellationToken);
-
-    /// <summary>
     /// Deletes a user.
     /// </summary>
     /// <param name="request">The user deletion request.</param>

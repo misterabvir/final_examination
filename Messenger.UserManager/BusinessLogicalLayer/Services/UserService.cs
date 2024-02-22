@@ -49,7 +49,6 @@ public class UserService : IUserService
         _publishEndpoint = publishEndpoint;
     }
 
-
     /// <summary>
     /// Retrieves all users
     /// </summary>
@@ -166,18 +165,5 @@ public class UserService : IUserService
 
         // Return success result
         return new UserDeleteResponse(true);
-    }
-
-    /// <summary>
-    /// Checks if a user with the given ID exists.
-    /// </summary>
-    /// <param name="request"> The request containing the user ID to check for existence. </param>
-    /// <param name="cancellationToken">The cancellation token</param>
-    /// <returns>A result containing the user existence status or an error</returns>
-    public async Task<Result<UserExistingResponse, Error>> GetIsExist(UserIsExistRequest request, CancellationToken cancellationToken)
-    {
-        // Get the user by ID
-        var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
-        return new UserExistingResponse { UserId = user?.Id ?? Guid.Empty, IsExisting = user is not null };
     }
 }

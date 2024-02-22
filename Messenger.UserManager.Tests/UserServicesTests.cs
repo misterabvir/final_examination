@@ -11,7 +11,6 @@ using Messenger.UserManager.DataAccessLayer.Repositories.Base;
 using Messenger.UserManager.Models;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
-using System.Threading;
 
 namespace Messenger.UserManager.Tests;
 
@@ -23,7 +22,7 @@ public class UserServicesTests
     private readonly ITokenService _tokenService;
     private readonly IMapperService _mapper;
     private readonly IUserService _userService;
-    private readonly IBus _bus;
+    private readonly IPublishEndpoint _publishEndpoint;
 
     public UserServicesTests()
     {
@@ -32,8 +31,8 @@ public class UserServicesTests
         _encryptService = Substitute.For<IEncryptService>();
         _tokenService = Substitute.For<ITokenService>();
         _mapper = Substitute.For<IMapperService>();
-       _bus = Substitute.For<IBus>();
-        _userService = new UserService(_userRepository, _roleRepository, _encryptService, _tokenService, _mapper, _bus);
+        _publishEndpoint = Substitute.For<IPublishEndpoint>();
+        _userService = new UserService(_userRepository, _roleRepository, _encryptService, _tokenService, _mapper, _publishEndpoint);
     }
 
 
@@ -66,48 +65,11 @@ public class UserServicesTests
     }
 
     [Fact]
-    public async Task GetIsExistShouldReturnFalesResult()
-    {
-        //arrange
-        _userRepository.GetByIdAsync(Arg.Any<Guid>(), default).ReturnsNull();
-
-        //act
-        var result = await _userService.GetIsExist(new UserIsExistRequest("email@email.com"), default);
-
-        //assert
-        result.Should().NotBeNull();
-        result.IsSuccess.Should().BeTrue();
-        result.Value.Should().NotBeNull();
-        result.Value.Should().BeOfType<UserExistingResponse>();
-        result.Value!.IsExisting.Should().BeFalse();
-        result.Value!.UserId.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task GetIsExistShouldReturnTrueResult()
-    {
-        //arrange
-        _userRepository.GetByEmailAsync(Arg.Any<string>(), default)
-            .Returns(new User() { Email = "email@email.com", Password = [], Salt = [], RoleId = Guid.Empty });
-
-        //act
-        var result = await _userService.GetIsExist(new UserIsExistRequest("email@email.com"), default);
-
-        //assert
-        result.Should().NotBeNull();
-        result.IsSuccess.Should().BeTrue();
-        result.Value.Should().NotBeNull();
-        result.Value.Should().BeOfType<UserExistingResponse>();
-        result.Value!.IsExisting.Should().BeTrue();
-        result.Value!.UserId.Should().NotBeEmpty();
-    }
-
-    [Fact]
     public async Task DeleteUserFailIfUserNotFound()
     {
         //arrange
         var user = new User() { Email = "email@email.com", Password = [], Salt = [], RoleId = Guid.Empty };
-        _userRepository.GetByIdAsync(Arg.Any<Guid>(), default).ReturnsNull();    
+        _userRepository.GetByIdAsync(Arg.Any<Guid>(), default).ReturnsNull();
 
         //act
         var result = await _userService.Delete(new UserDeleteRequest() { Id = Guid.NewGuid() }, default);
@@ -127,7 +89,7 @@ public class UserServicesTests
         //arrange
         var user = new User() { Email = "email@email.com", Password = [], Salt = [], RoleId = Guid.Empty };
         _userRepository.GetByIdAsync(Arg.Any<Guid>(), default).Returns(user);
-        
+
         //act
         var result = await _userService.Delete(new UserDeleteRequest() { Id = Guid.NewGuid() }, default);
 
@@ -222,7 +184,7 @@ public class UserServicesTests
 
         //assert
         await _userRepository.Received(1).GetByEmailAsync(Arg.Any<string>(), default);
-        
+
         result.Should().NotBeNull();
         result.IsSuccess.Should().BeFalse();
 
@@ -236,7 +198,7 @@ public class UserServicesTests
     {
         //arrange        
         _userRepository.GetByEmailAsync(Arg.Any<string>(), default).ReturnsNull();
-        _userRepository.GetAllAsync(default).Returns([]);_roleRepository.GetRoleByRoleTypeAsync(RoleType.Administrator).Returns(new Role() { RoleType = RoleType.Administrator });
+        _userRepository.GetAllAsync(default).Returns([]); _roleRepository.GetRoleByRoleTypeAsync(RoleType.Administrator).Returns(new Role() { RoleType = RoleType.Administrator });
         _encryptService.GenerateSalt().Returns([]);
         _encryptService.HashPassword(Arg.Any<string>(), Arg.Any<byte[]>()).Returns([]);
         _tokenService.GenerateToken(Arg.Any<Guid>(), Arg.Any<string>(), Arg.Any<string>()).Returns("token");
@@ -267,7 +229,7 @@ public class UserServicesTests
         //arrange        
         User user = new User() { Email = "email", Password = [], Salt = [], RoleId = Guid.Empty, Role = new Role() { RoleType = RoleType.User } };
         _userRepository.GetByEmailAsync(Arg.Any<string>(), default).ReturnsNull();
-        _userRepository.GetAllAsync(default).Returns([user]); 
+        _userRepository.GetAllAsync(default).Returns([user]);
         _roleRepository.GetRoleByRoleTypeAsync(RoleType.User).Returns(new Role() { RoleType = RoleType.User });
         _encryptService.GenerateSalt().Returns([]);
         _encryptService.HashPassword(Arg.Any<string>(), Arg.Any<byte[]>()).Returns([]);

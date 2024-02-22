@@ -11,8 +11,6 @@ namespace Messenger.MessageManager.BusinessLogicalLayer.Services;
 
 public class MessageService : IMessageService
 {
-    private readonly IHttpClientService _httpClientService;
-    private readonly IMapperService _mapper;
     private readonly IMessageRepository _messageRepository;
     private readonly IUserRepository _userRepository;
 
@@ -22,11 +20,9 @@ public class MessageService : IMessageService
     /// <param name="messageRepository">The message repository</param>
     /// <param name="httpClientService">The HTTP httpClientService</param>
     /// <param name="mapper">The mapper</param>
-    public MessageService(IMessageRepository messageRepository, IHttpClientService httpClientService, IMapperService mapper, IUserRepository userRepository)
+    public MessageService(IMessageRepository messageRepository,  IUserRepository userRepository)
     {
-        _httpClientService = httpClientService;
         _messageRepository = messageRepository;
-        _mapper = mapper;
         _userRepository = userRepository;
     }
 

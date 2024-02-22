@@ -64,21 +64,6 @@ public class UsersController : BaseController
         return Ok(new { UserId = user.Id });
     }
 
-    [AllowAnonymous]
-    [HttpPost(template: "is-user-exist")]
-    public async Task<IActionResult> IsUserExist(UserIsExistRequest request, CancellationToken cancellationToken)
-    {
-        // Call the UserService to flag exists for user bt id;
-        var response = await _userService.GetIsExist(request, cancellationToken);
-        if (response.IsSuccess)
-        {
-            return Ok(response.Value);
-        }
-
-        // Return problem action result if there was an error
-        return ProblemActionResult(response.Error!);
-    }
-
     /// <summary>
     /// Registers a new user
     /// </summary>
